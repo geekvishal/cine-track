@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineTrack - IMDb Movies Analytics & Insights Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="logo-container">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-film"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M17 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/></svg>
+      </div>
+      <div class="logo-text">
+        <h1>CineTrack</h1>
+        <span>IMDb Analytics</span>
+      </div>
+    </div>
+    <div class="header-controls">
+      <div id="active-data-badge" class="data-source-badge" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        <span id="data-source-text">Demo Data</span>
+      </div>
+      <button id="reset-upload-btn" class="btn btn-secondary" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+        Upload New CSV
+      </button>
+    </div>
+  </header>
+
+  <!-- App Body -->
+  <main class="app-body">
+    
+    <!-- Screen 1: Welcome / Upload Screen -->
+    <section id="welcome-screen" class="welcome-container animate-fade-in">
+      <div class="welcome-info">
+        <h2>Uncover Your Movie Taste</h2>
+        <p>Upload your official IMDb ratings or watchlist CSV to visualize your viewing trends, find rating anomalies, discover your top directors, and explore interactive movie metrics.</p>
+      </div>
+
+      <!-- Drag & Drop Zone -->
+      <div id="drop-zone" class="upload-zone">
+        <input type="file" id="csv-file-input" accept=".csv" />
+        <div class="upload-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+        </div>
+        <h3>Drag & drop your IMDb CSV file here</h3>
+        <p>or click to browse your files</p>
+        <span class="btn btn-primary">Choose CSV File</span>
+      </div>
+
+      <div class="upload-divider">
+        <span>Or Quick Preview</span>
+      </div>
+
+      <div class="demo-trigger-container">
+        <button id="load-demo-btn" class="btn btn-outline-cyan btn-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Explore with Demo Data
+        </button>
+        <span class="demo-help-text">
+          Don't know how to export your IMDb data? 
+          <a href="https://help.imdb.com/article/imdb/track-movies-tv/ratings-faq/G6AB29YQ4LUZ986Q" target="_blank" rel="noopener">Learn how here</a>.
+        </span>
+      </div>
+    </section>
+
+    <!-- Screen 2: Dashboard Screen -->
+    <section id="dashboard-screen" class="dashboard-container">
+      
+      <!-- Dashboard Top Banner Info -->
+      <div class="dashboard-header-info animate-fade-in">
+        <div class="dashboard-title">
+          <h2>Your Cinema Insights</h2>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="kpi-grid animate-fade-in" style="animation-delay: 0.1s;">
+        <!-- Card 1: Total Watched -->
+        <div class="card kpi-card">
+          <div class="kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 3v18"/><path d="M17 3v18"/><path d="M3 7.5h4"/><path d="M3 12h18"/><path d="M3 16.5h4"/><path d="M17 7.5h4"/><path d="M17 16.5h4"/></svg>
+          </div>
+          <div class="kpi-info">
+            <span id="kpi-total-watched" class="kpi-value">0</span>
+            <span class="kpi-label">Titles Logged</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Average User Rating -->
+        <div class="card kpi-card cyan">
+          <div class="kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div class="kpi-info">
+            <span id="kpi-user-rating" class="kpi-value">0.0</span>
+            <span class="kpi-label">Avg User Rating</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Watch Time -->
+        <div class="card kpi-card gold">
+          <div class="kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="kpi-info">
+            <span id="kpi-watch-time" class="kpi-value">0d 0h</span>
+            <span class="kpi-label">Est. Watch Time</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Taste Divergence -->
+        <div class="card kpi-card red">
+          <div class="kpi-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.828L3 3"/><path d="m21 3-7.828 7.828A4 4 0 0 0 12 13.7V22"/></svg>
+          </div>
+          <div class="kpi-info">
+            <span id="kpi-divergence" class="kpi-value">0.0</span>
+            <span class="kpi-label">Taste Divergence</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Charts section -->
+      <div class="charts-grid animate-fade-in" style="animation-delay: 0.2s;">
+        <!-- Chart 1: Ratings Comparison -->
+        <div class="card">
+          <div class="chart-card-title">
+            <span>Ratings Distribution (You vs. IMDb)</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="18" y1="21" x2="18" y2="9"/><line x1="12" y1="21" x2="12" y2="5"/><line x1="6" y1="21" x2="6" y2="14"/></svg>
+          </div>
+          <div id="chart-ratings" class="chart-container"></div>
+        </div>
+
+        <!-- Chart 2: Genre Share -->
+        <div class="card">
+          <div class="chart-card-title">
+            <span>Top Genres Breakdown</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          </div>
+          <div id="chart-genres" class="chart-container"></div>
+        </div>
+
+        <!-- Chart 3: Release Decades Trend -->
+        <div class="card">
+          <div class="chart-card-title">
+            <span>Release Year Distribution</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          </div>
+          <div id="chart-decades" class="chart-container"></div>
+        </div>
+
+        <!-- Chart 4: Rating Timeline -->
+        <div class="card">
+          <div class="chart-card-title">
+            <span>Your Rating Timeline (Over Time)</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+          </div>
+          <div id="chart-timeline" class="chart-container"></div>
+        </div>
+      </div>
+
+      <!-- Advanced Insights Grid -->
+      <div class="animate-fade-in" style="animation-delay: 0.3s;">
+        <h3 class="section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+          Movie Preferences & Anomalies
+        </h3>
+        
+        <div class="insights-grid">
+          <!-- Hidden Gems -->
+          <div class="card">
+            <div class="chart-card-title">
+              <span>Your Hidden Gems (Highly Rated by You, Low IMDb)</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div id="hidden-gems-list" class="insight-list">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Overrated Disappointments -->
+          <div class="card">
+            <div class="chart-card-title">
+              <span>Your Disappointments (Muted by You, High IMDb)</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-red);"><path d="m15 18-6-6 6-6"/></svg>
+            </div>
+            <div id="disappointments-list" class="insight-list">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Top Directors -->
+          <div class="card">
+            <div class="chart-card-title">
+              <span>Top Directors (By Count)</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <table class="insight-table">
+              <thead>
+                <tr>
+                  <th>Director</th>
+                  <th>Watched</th>
+                  <th>Avg Your Rating</th>
+                </tr>
+              </thead>
+              <tbody id="top-directors-list">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Genre breakdown insights -->
+          <div class="card">
+            <div class="chart-card-title">
+              <span>Favorite Genres (By Average Rating)</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 2 18 2 18 6 6 6 6 2"/><rect x="3" y="6" width="18" height="16" rx="2"/><path d="M10 12h4"/><path d="M10 16h4"/></svg>
+            </div>
+            <table class="insight-table">
+              <thead>
+                <tr>
+                  <th>Genre</th>
+                  <th>Watched</th>
+                  <th>Avg Your Rating</th>
+                </tr>
+              </thead>
+              <tbody id="top-genres-pref-list">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- IMDb Data Explorer (Table) -->
+      <div class="card explorer-card animate-fade-in" style="animation-delay: 0.4s;">
+        <div class="chart-card-title">
+          <span>IMDb Data Explorer</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+
+        <!-- Table Filters & Search -->
+        <div class="explorer-controls">
+          <div class="search-input-wrapper">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="table-search" class="search-input" placeholder="Search by movie title, director..." />
+          </div>
+
+          <div class="filter-group">
+            <!-- Title Type Filter -->
+            <select id="filter-type" class="select-filter">
+              <option value="all">All Types</option>
+              <!-- Populated dynamically -->
+            </select>
+            
+            <!-- Genre Filter -->
+            <select id="filter-genre" class="select-filter">
+              <option value="all">All Genres</option>
+              <!-- Populated dynamically -->
+            </select>
+
+            <!-- User Rating Filter -->
+            <select id="filter-rating" class="select-filter">
+              <option value="all">All Ratings</option>
+              <option value="9-10">Rated 9-10</option>
+              <option value="7-8">Rated 7-8</option>
+              <option value="5-6">Rated 5-6</option>
+              <option value="1-4">Rated 1-4</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="table-responsive">
+          <table class="main-table">
+            <thead>
+              <tr>
+                <th id="th-title" class="sort-asc" data-sort="Title">Title</th>
+                <th id="th-type" data-sort="Title Type">Type</th>
+                <th id="th-user-rating" data-sort="Your Rating">Your Rating</th>
+                <th id="th-imdb-rating" data-sort="IMDb Rating">IMDb Rating</th>
+                <th id="th-runtime" data-sort="Runtime (mins)">Runtime</th>
+                <th id="th-year" data-sort="Year">Year</th>
+                <th id="th-genres" data-sort="Genres">Genres</th>
+                <th id="th-directors" data-sort="Directors">Directors</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <!-- Table rows are rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Pagination -->
+        <div class="pagination-controls">
+          <div id="table-info">
+            Showing 0 to 0 of 0 entries
+          </div>
+          <div class="pagination-buttons">
+            <button id="btn-prev-page" class="page-btn" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <div id="page-numbers" style="display: flex; gap: 5px;">
+              <!-- Dynamic page button numbers -->
+            </div>
+            <button id="btn-next-page" class="page-btn" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- App Footer -->
+  <footer class="app-footer">
+    <p>&copy; CineTrack IMDb Dashboard. All calculations are performed 100% locally in your browser. Your data is private.</p>
+    <p style="margin-top: 5px; font-size: 0.75rem;">Created with modern Web APIs & CSS Grid. <a href="https://github.com" target="_blank">View Docs</a></p>
+  </footer>
+
+  <!-- Scripts -->
+  <!-- PapaParse for CSV parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <!-- ApexCharts for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  
+  <!-- Demo Data & Dashboard Script -->
+  <script src="demo_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
